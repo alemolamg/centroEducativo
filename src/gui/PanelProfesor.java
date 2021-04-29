@@ -153,8 +153,7 @@ public class PanelProfesor extends JPanel {
 		actual.setTelefono(this.pnlDatosP.getTelefono().getText());
 		actual.setTipologiasexo((Tipologiasexo) this.pnlDatosP.getJcbSexo().getSelectedItem());
 		actual.setImagen(this.pnlDatosP.getImagen());
-		actual.setColorFav(this.pnlDatosP.getJtfColorFav());
-		
+		actual.setColorFav(this.pnlDatosP.getJtfColorFav());	
 	}
 
 	private void cargarActualEnPantalla() {
@@ -173,7 +172,6 @@ public class PanelProfesor extends JPanel {
 		for (int i = 0; i < this.pnlDatosP.getJcbSexo().getItemCount(); i++)
 			if (this.actual.getTipologiasexo().getId() == this.pnlDatosP.getJcbSexo().getItemAt(i).getId())
 				this.pnlDatosP.getJcbSexo().setSelectedIndex(i);
-		
 	}
 	
 	private void vaciarCampos() {
@@ -186,6 +184,8 @@ public class PanelProfesor extends JPanel {
 		this.pnlDatosP.getEmail().setText("");
 		this.pnlDatosP.getTelefono().setText("");
 		this.pnlDatosP.getJcbSexo().setSelectedIndex(1);
+		this.pnlDatosP.setImagen(null);
+		this.pnlDatosP.setColorPanel(null);
 	}
 	
 	public void borrar() {

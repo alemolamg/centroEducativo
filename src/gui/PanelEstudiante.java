@@ -12,6 +12,8 @@ import model.entities.Tipologiasexo;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
@@ -43,37 +45,41 @@ public class PanelEstudiante extends JPanel {
 		gbc_barraHerramientas.gridy = 0;
 		add(barraHerramientas, gbc_barraHerramientas);
 		
-		JButton btnPrimero = new JButton("<<");
+		JButton btnPrimero = new JButton("");
+		btnPrimero.setIcon(new ImageIcon(PanelProfesor.class.getResource("/resources/icons/primero.png")));
 		btnPrimero.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				actual = ControladorEstudiante.getInstance().findPrimero();
 				cargarActualEnPantalla();
 			}
 		});
-		btnPrimero.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		btnPrimero.setFont(new Font("Tahoma", Font.PLAIN, 34));
 		barraHerramientas.add(btnPrimero);
 		
-		JButton btnAnterior = new JButton("<");
+		JButton btnAnterior = new JButton("");
+		btnAnterior.setIcon(new ImageIcon(PanelProfesor.class.getResource("/resources/icons/flechaAnterior.png")));
 		btnAnterior.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				actual = ControladorEstudiante.getInstance().findAnterior(actual.getId());
 				cargarActualEnPantalla();
 			}
 		});
-		btnAnterior.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		btnAnterior.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		barraHerramientas.add(btnAnterior);
 		
-		JButton btnSiguiente = new JButton(">");
+		JButton btnSiguiente = new JButton("");
+		btnSiguiente.setIcon(new ImageIcon(PanelProfesor.class.getResource("/resources/icons/flechaSiguiente.png")));
 		btnSiguiente.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				actual = ControladorEstudiante.getInstance().findSiguiente(actual.getId());
 				cargarActualEnPantalla(); 
 			}
 		});
-		btnSiguiente.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		btnSiguiente.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		barraHerramientas.add(btnSiguiente);
 		
-		JButton btnUltimo = new JButton(">>");
+		JButton btnUltimo = new JButton("");
+		btnUltimo.setIcon(new ImageIcon(PanelProfesor.class.getResource("/resources/icons/ultimo.png")));
 		btnUltimo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				actual = ControladorEstudiante.getInstance().findUltimo();
@@ -83,7 +89,8 @@ public class PanelEstudiante extends JPanel {
 		btnUltimo.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		barraHerramientas.add(btnUltimo);
 		
-		JButton btnNuevo = new JButton("Nuevo");
+		JButton btnNuevo = new JButton("");
+		btnNuevo.setIcon(new ImageIcon(PanelProfesor.class.getResource("/resources/icons/add-file.png")));
 		btnNuevo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				vaciarCampos();
@@ -92,7 +99,8 @@ public class PanelEstudiante extends JPanel {
 		btnNuevo.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		barraHerramientas.add(btnNuevo);
 		
-		JButton btnGuardar = new JButton("Guardar");
+		JButton btnGuardar = new JButton("");
+		btnGuardar.setIcon(new ImageIcon(PanelProfesor.class.getResource("/resources/icons/floppy-disk.png")));
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				guardar();
@@ -101,7 +109,8 @@ public class PanelEstudiante extends JPanel {
 		btnGuardar.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		barraHerramientas.add(btnGuardar);
 		
-		JButton btnBorrar = new JButton("Borrar");
+		JButton btnBorrar = new JButton("");
+		btnBorrar.setIcon(new ImageIcon(PanelProfesor.class.getResource("/resources/icons/eliminar.png")));
 		btnBorrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				borrar();
@@ -143,8 +152,10 @@ public class PanelEstudiante extends JPanel {
 		actual.setDireccion(this.pnlDatosP.getDireccion().getText());
 		actual.setDni(this.pnlDatosP.getJtfDNI().getText());
 		actual.setEmail(this.pnlDatosP.getJtfDNI().getText());
-		actual.setTelefono(this.pnlDatosP.getTelefono().getText());	
-		actual.setTipologiasexo((Tipologiasexo)this.pnlDatosP.getJcbSexo().getSelectedItem());
+		actual.setTelefono(this.pnlDatosP.getTelefono().getText());
+		actual.setTipologiasexo((Tipologiasexo) this.pnlDatosP.getJcbSexo().getSelectedItem());
+		actual.setImagen(this.pnlDatosP.getImagen());
+		actual.setColorFav(this.pnlDatosP.getJtfColorFav());	
 	}
 
 	private void cargarActualEnPantalla() {
@@ -156,12 +167,13 @@ public class PanelEstudiante extends JPanel {
 		this.pnlDatosP.getDireccion().setText(this.actual.getDireccion());
 		this.pnlDatosP.getEmail().setText(this.actual.getEmail());
 		this.pnlDatosP.getTelefono().setText(this.actual.getTelefono());
-		
+		this.pnlDatosP.setImagen(actual.getImagen());
+		this.pnlDatosP.setColorPanel(actual.getColorFav());
+		 
 		// Cargar el sexo
-		for (int i = 1; i <= this.pnlDatosP.getJcbSexo().getItemCount(); i++)
+		for (int i = 0; i < this.pnlDatosP.getJcbSexo().getItemCount(); i++)
 			if (this.actual.getTipologiasexo().getId() == this.pnlDatosP.getJcbSexo().getItemAt(i).getId())
 				this.pnlDatosP.getJcbSexo().setSelectedIndex(i);
-		
 	}
 	
 	private void vaciarCampos() {
@@ -173,6 +185,9 @@ public class PanelEstudiante extends JPanel {
 		this.pnlDatosP.getDireccion().setText("");
 		this.pnlDatosP.getEmail().setText("");
 		this.pnlDatosP.getTelefono().setText("");
+		this.pnlDatosP.getJcbSexo().setSelectedIndex(1);
+		this.pnlDatosP.setImagen(null);
+		this.pnlDatosP.setColorPanel(null);
 	}
 	
 	public void borrar() {
