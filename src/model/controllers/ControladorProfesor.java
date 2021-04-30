@@ -8,6 +8,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
+import model.entities.Materia;
 import model.entities.Profesor;
 import model.entities.Tipologiasexo;
 
@@ -132,6 +133,15 @@ public class ControladorProfesor {
 		sexos = q.getResultList();
 		em.close();
 		return sexos;
+	}
+	
+	public List<Profesor> findAll() {
+		List<Profesor> profesores = new ArrayList<Profesor>();
+		EntityManager em = factory.createEntityManager();
+		Query q = em.createNativeQuery("SELECT * FROM profesor", Profesor.class);
+		profesores = q.getResultList();
+		em.close();
+		return profesores;
 	}
 	
 

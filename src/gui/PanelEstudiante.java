@@ -128,7 +128,7 @@ public class PanelEstudiante extends JPanel {
 		add(pnlDatosP, gbc_textField_1);
 		
 		
-		cargarDatosSexo();
+//		cargarDatosSexo();
 		this.actual = ControladorEstudiante.getInstance().findPrimero();
 		cargarActualEnPantalla();
 
