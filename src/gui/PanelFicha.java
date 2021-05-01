@@ -2,21 +2,29 @@ package gui;
 
 import javax.swing.JPanel;
 
+import model.controllers.ControladorValMateria;
 import model.entities.Estudiante;
+import model.entities.Materia;
+import model.entities.Profesor;
+import model.entities.ValoracionMateria;
+
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import javax.swing.JTextField;
 import java.awt.Insets;
+import java.util.List;
 import java.awt.Font;
 
 public class PanelFicha extends JPanel {
 	
-	private Estudiante actual;
+	private Estudiante estudiante;
+	private Profesor profesor;
+	private Materia materia;
 	private JTextField jtfValoracion;
 	
 	
-	public PanelFicha(Estudiante est) {
+	public PanelFicha(Estudiante est, Materia mat, Profesor pro) {
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0};
 		gridBagLayout.rowHeights = new int[]{0, 0};
@@ -43,9 +51,42 @@ public class PanelFicha extends JPanel {
 		jtfValoracion.setColumns(10);
 
 		
-		this.actual = est;	// Asigno el estudiante a la variable de la clase
-		jlbNombre.setText(actual.toString());
+		this.materia = mat;
+		this.profesor = pro;
+		this.estudiante = est;	// Asigno el estudiante a la variable de la clase
+		jlbNombre.setText(estudiante.toString());
+		cargarNotas();
 		
+	}
+	
+	
+	private boolean cargarNotas() {
+		boolean cargado = false;
+		for(ValoracionMateria valMatActual : ControladorValMateria.getInstance().findAll()) {
+			if(valMatActual.getEstudiante().getId() == estudiante.getId() && valMatActual.getMateria().getId() == materia.getId()
+					&& valMatActual.getProfesor().getId() == profesor.getId()) {
+				if(valMatActual.getValoracion() != 0)
+					this.jtfValoracion.setText(""+ valMatActual.getValoracion());
+				else
+					this.jtfValoracion.setText("");
+				cargado = true;
+			}			
+		}
+		return cargado;
+	}
+	
+	
+	public ValoracionMateria guardar() {
+		ValoracionMateria valMateria = null;
+		for(ValoracionMateria valMatActual : ControladorValMateria.getInstance().findAll())
+			if(valMatActual.getEstudiante().getId() == estudiante.getId() && valMatActual.getMateria().getId() == materia.getId()
+					&& valMatActual.getProfesor().getId() == profesor.getId()) {
+//			valMateria = new ValoracionMateria(valMatActual.getId(),estudiante, materia, profesor, Float.parseFloat(jtfValoracion.getText()) );
+				valMatActual.setValoracion(Float.parseFloat(jtfValoracion.getText()));
+				valMateria = valMatActual;
+		} else
+			valMateria = new ValoracionMateria(0,estudiante, materia, profesor, Float.parseFloat(jtfValoracion.getText()) );
+		return valMateria;
 	}
 
 }

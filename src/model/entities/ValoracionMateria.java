@@ -36,6 +36,14 @@ public class ValoracionMateria implements Serializable {
 
 	public ValoracionMateria() {
 	}
+	
+	public ValoracionMateria(int id,Estudiante est, Materia mat, Profesor pro, float nota) {
+		this.id = id;
+		this.estudiante = est;
+		this.profesor = pro;
+		this.materia = mat;
+		this.valoracion = nota;
+	}
 
 	public int getId() {
 		return this.id;

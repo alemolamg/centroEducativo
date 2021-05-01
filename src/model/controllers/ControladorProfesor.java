@@ -99,7 +99,7 @@ public class ControladorProfesor {
 			em.close();
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("Error al guardar un Fabricante");
+			System.out.println("Error al guardar Profesor");
 			return false;
 		}
 		return true;

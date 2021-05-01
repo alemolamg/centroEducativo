@@ -3,8 +3,11 @@ package gui;
 import javax.swing.JPanel;
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComboBox;
@@ -15,6 +18,7 @@ import javax.swing.JScrollPane;
 import model.controllers.ControladorEstudiante;
 import model.controllers.ControladorMateria;
 import model.controllers.ControladorProfesor;
+import model.controllers.ControladorValMateria;
 import model.entities.Estudiante;
 import model.entities.Materia;
 import model.entities.Profesor;
@@ -29,8 +33,8 @@ public class PanelValoraciones extends JPanel {
 	private Materia actualMat;
 	private JComboBox<Profesor> jcbProfesor;
 	private JComboBox<Materia> jcbMateria;
-	private JPanel jpnlParaFichas;
 	private JScrollPane scrollPane;
+	private List<PanelFicha> listaFichas;
 	
 	/**
 	 * Create the panel.
@@ -82,6 +86,7 @@ public class PanelValoraciones extends JPanel {
 		JButton btnBuscarAlumnos = new JButton("Buscar Alumnos");
 		btnBuscarAlumnos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				botonPulsado();
 				cargarFichasAlumnos();
 			}
 		});
@@ -94,16 +99,25 @@ public class PanelValoraciones extends JPanel {
 		
 		scrollPane = new JScrollPane();
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+		gbc_scrollPane.gridwidth = 3;
 		gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
 		gbc_scrollPane.fill = GridBagConstraints.BOTH;
-		gbc_scrollPane.gridx = 1;
+		gbc_scrollPane.gridx = 0;
 		gbc_scrollPane.gridy = 3;
 		add(scrollPane, gbc_scrollPane);
 		
-		jpnlParaFichas = new JPanel();
-		scrollPane.setViewportView(jpnlParaFichas);
-		
 		JButton btnGuardarNotas = new JButton("Guardar Valoraciones");
+		btnGuardarNotas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				botonPulsado();
+				for(PanelFicha ficha : listaFichas) {
+					if(ControladorValMateria.getInstance().guardar(ficha.guardar()) ) {
+						JOptionPane.showMessageDialog(null, "Guardado Correctamente");
+					} else
+						JOptionPane.showMessageDialog(null, "Error al Guardar");
+				}
+			}
+		});
 		btnGuardarNotas.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnGuardarNotas = new GridBagConstraints();
 		gbc_btnGuardarNotas.gridx = 2;
@@ -113,7 +127,6 @@ public class PanelValoraciones extends JPanel {
 		
 		
 		cargarListas();
-
 	}
 	
 	private void cargarListas() {
@@ -126,20 +139,44 @@ public class PanelValoraciones extends JPanel {
 	
 		
 	private void cargarFichasAlumnos() {
+		listaFichas = new ArrayList<PanelFicha>();
 		actualMat = (Materia) jcbMateria.getSelectedItem();		//Guardo la materia con la que trabajo
 		actualProf = (Profesor) jcbProfesor.getSelectedItem();	// Guardo el profesor con el que trabajo
+		JPanel jpnlFichas = new JPanel();
+		GridBagConstraints gbc_preFichas = new GridBagConstraints();
+		gbc_preFichas.insets = new Insets(0, 0, 5, 5);
+		gbc_preFichas.fill = GridBagConstraints.BOTH;
+		gbc_preFichas.gridx = 1;
+		gbc_preFichas.gridy = 3;
+		add(jpnlFichas,gbc_preFichas);
 		
 		// Hay que crear el panel aquí y cambiar el GBC la coordenada Y para cada ficha de Estudiante.
-		for(Estudiante est : ControladorEstudiante.getInstance().findAll()) {
-			this.jpnlParaFichas.add(new PanelFicha(est));
+		for(int i =0 ;i < ControladorEstudiante.getInstance().findAll().size(); i++) {
+			Estudiante est = ControladorEstudiante.getInstance().findAll().get(i);	//Seleccionamos un estudiante
+			PanelFicha fichaEst = new PanelFicha(est,actualMat, actualProf);
+			GridBagConstraints gbc_panelFichas = new GridBagConstraints();
+			gbc_panelFichas.insets = new Insets(0, 0, 5, 5);
+			gbc_panelFichas.fill = GridBagConstraints.HORIZONTAL;
+			gbc_panelFichas.anchor = GridBagConstraints.PAGE_START;
+			gbc_panelFichas.gridx = 0;
+			gbc_panelFichas.gridy = 0;
+			gbc_panelFichas.gridheight =1;
+			gbc_panelFichas.gridwidth =i;
+			
+			add(fichaEst,gbc_panelFichas);
+			
+			jpnlFichas.add(fichaEst); 	// ADD fichaEstudiantes al JPanel
+			listaFichas.add(fichaEst);	// ADD fichaEstudiantes a la lista
 		}
 		
-		this.scrollPane.setViewportView(jpnlParaFichas);
+		this.scrollPane.setViewportView(jpnlFichas);
 		scrollPane.revalidate();
-		scrollPane.repaint();
-		
+		scrollPane.repaint();	
 		
 	}
 	
+	public static void botonPulsado() {
+		System.out.println("Pulsado");
+	}
 	
 }
