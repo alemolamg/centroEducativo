@@ -25,6 +25,7 @@ import model.entities.Profesor;
 import model.entities.ValoracionMateria;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.ScrollPaneConstants;
 
 public class PanelValoraciones extends JPanel {
 	
@@ -146,8 +147,8 @@ public class PanelValoraciones extends JPanel {
 		GridBagConstraints gbc_preFichas = new GridBagConstraints();
 		gbc_preFichas.insets = new Insets(0, 0, 5, 5);
 		gbc_preFichas.fill = GridBagConstraints.BOTH;
-		gbc_preFichas.gridx = 1;
-		gbc_preFichas.gridy = 3;
+		gbc_preFichas.gridx = 0;
+		gbc_preFichas.gridy = 0;
 		add(jpnlFichas,gbc_preFichas);
 		
 		// Hay que crear el panel aquí y cambiar el GBC la coordenada Y para cada ficha de Estudiante.
@@ -157,11 +158,8 @@ public class PanelValoraciones extends JPanel {
 			GridBagConstraints gbc_panelFichas = new GridBagConstraints();
 			gbc_panelFichas.insets = new Insets(0, 0, 5, 5);
 			gbc_panelFichas.fill = GridBagConstraints.HORIZONTAL;
-			gbc_panelFichas.anchor = GridBagConstraints.PAGE_START;
 			gbc_panelFichas.gridx = 0;
-			gbc_panelFichas.gridy = 0;
-			gbc_panelFichas.gridheight =1;
-			gbc_panelFichas.gridwidth =i;
+			gbc_panelFichas.gridy = i;
 			
 			add(fichaEst,gbc_panelFichas);
 			

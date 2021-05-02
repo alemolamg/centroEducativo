@@ -68,9 +68,13 @@ public class PanelFicha extends JPanel {
 				if(valMatActual.getValoracion() != 0)
 					this.jtfValoracion.setText(""+ valMatActual.getValoracion());
 				else
-					this.jtfValoracion.setText("");
+					this.jtfValoracion.setText("-1");
 				cargado = true;
-			}			
+				return cargado;
+			} else {
+				this.jtfValoracion.setText("0");
+				cargado = true;
+			}
 		}
 		return cargado;
 	}
@@ -78,14 +82,16 @@ public class PanelFicha extends JPanel {
 	
 	public ValoracionMateria guardar() {
 		ValoracionMateria valMateria = null;
-		for(ValoracionMateria valMatActual : ControladorValMateria.getInstance().findAll())
+		for(ValoracionMateria valMatActual : ControladorValMateria.getInstance().findAll()) {
+			
 			if(valMatActual.getEstudiante().getId() == estudiante.getId() && valMatActual.getMateria().getId() == materia.getId()
 					&& valMatActual.getProfesor().getId() == profesor.getId()) {
-//			valMateria = new ValoracionMateria(valMatActual.getId(),estudiante, materia, profesor, Float.parseFloat(jtfValoracion.getText()) );
 				valMatActual.setValoracion(Float.parseFloat(jtfValoracion.getText()));
 				valMateria = valMatActual;
-		} else
-			valMateria = new ValoracionMateria(0,estudiante, materia, profesor, Float.parseFloat(jtfValoracion.getText()) );
+				break;
+			} else
+				valMateria = new ValoracionMateria(0,estudiante, materia, profesor, Float.parseFloat(jtfValoracion.getText()) );
+		}
 		return valMateria;
 	}
 
