@@ -16,7 +16,7 @@ import java.awt.Insets;
 import java.util.List;
 import java.awt.Font;
 
-public class PanelFicha extends JPanel {
+public class PanelFichaAlumno extends JPanel {
 	
 	private Estudiante estudiante;
 	private Profesor profesor;
@@ -24,7 +24,7 @@ public class PanelFicha extends JPanel {
 	private JTextField jtfValoracion;
 	
 	
-	public PanelFicha(Estudiante est, Materia mat, Profesor pro) {
+	public PanelFichaAlumno(Estudiante est, Materia mat, Profesor pro) {
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0};
 		gridBagLayout.rowHeights = new int[]{0, 0};

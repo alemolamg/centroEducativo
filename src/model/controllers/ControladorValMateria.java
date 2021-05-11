@@ -8,6 +8,9 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
+import model.entities.Estudiante;
+import model.entities.Materia;
+import model.entities.Profesor;
 import model.entities.Tipologiasexo;
 import model.entities.ValoracionMateria;
 
@@ -43,10 +46,27 @@ public class ControladorValMateria {
 			em.close();
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("Error al guardar Profesor");
+			System.out.println("Error al Guardar");
 			return false;
 		}
 		return true;
+	}
+	
+	public boolean buscarPorAlumno(Profesor pro,Estudiante est, Materia mat, int nota) {
+			EntityManager em = factory.createEntityManager();
+			Query q = em.createNativeQuery("SELECT * FROM valoracionmateria"
+					+ "WHERE idProfesor = ? AND idEstudiante = ? AND idMateria = ? AND ROUND(valoracion) = ? ;", ValoracionMateria.class);
+			q.setParameter(1, pro.getId());
+			q.setParameter(2, est.getId());
+			q.setParameter(3, mat.getId());
+			q.setParameter(4, nota);
+			
+			if (q.getSingleResult() != null)
+				return true;
+			else
+				return false;
+		
+		
 	}
 	
 }

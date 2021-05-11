@@ -27,7 +27,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.ScrollPaneConstants;
 
-public class PanelValoraciones extends JPanel {
+public class PanelValoraciones2 extends JPanel {
 	
 	private ValoracionMateria valMateria;
 	private Profesor actualProf;
@@ -35,17 +35,19 @@ public class PanelValoraciones extends JPanel {
 	private JComboBox<Profesor> jcbProfesor;
 	private JComboBox<Materia> jcbMateria;
 	private JScrollPane scrollPane;
-	private List<PanelFichaAlumno> listaFichas;
+	private PanelSelectorNotas actualPanel;
+	private JComboBox<Integer> jcbNotas;
+	private int actualNota;
 	
 	/**
 	 * Create the panel.
 	 */
-	public PanelValoraciones() {
+	public PanelValoraciones2() {
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0};
-		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0};
+		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0};
 		gridBagLayout.columnWeights = new double[]{0.0, 1.0, 0.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 		
 		JLabel lblMateria = new JLabel("Materia: ");
@@ -66,7 +68,7 @@ public class PanelValoraciones extends JPanel {
 		gbc_jcbMateria.gridy = 0;
 		add(jcbMateria, gbc_jcbMateria);
 		
-		JLabel lblNewLabel_1 = new JLabel("Profesor: ");
+		JLabel lblNewLabel_1 = new JLabel("  Profesor: ");
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
 		gbc_lblNewLabel_1.anchor = GridBagConstraints.EAST;
@@ -88,41 +90,60 @@ public class PanelValoraciones extends JPanel {
 		btnBuscarAlumnos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				botonPulsado();
-				cargarFichasAlumnos();
+				//cargarFichasAlumnos();
+				cargarSelectorNotas();
 			}
 		});
+		
+		JLabel lblabelNota = new JLabel("Nota: ");
+		lblabelNota.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		GridBagConstraints gbc_lblabelNota = new GridBagConstraints();
+		gbc_lblabelNota.anchor = GridBagConstraints.EAST;
+		gbc_lblabelNota.insets = new Insets(0, 0, 5, 5);
+		gbc_lblabelNota.gridx = 0;
+		gbc_lblabelNota.gridy = 2;
+		add(lblabelNota, gbc_lblabelNota);
+		
+		jcbNotas = new JComboBox();
+		GridBagConstraints gbc_jcbNotas = new GridBagConstraints();
+		gbc_jcbNotas.gridwidth = 2;
+		gbc_jcbNotas.insets = new Insets(0, 0, 5, 5);
+		gbc_jcbNotas.fill = GridBagConstraints.HORIZONTAL;
+		gbc_jcbNotas.gridx = 1;
+		gbc_jcbNotas.gridy = 2;
+		add(jcbNotas, gbc_jcbNotas);
 		btnBuscarAlumnos.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnBuscarAlumnos = new GridBagConstraints();
 		gbc_btnBuscarAlumnos.insets = new Insets(0, 0, 5, 0);
 		gbc_btnBuscarAlumnos.gridx = 2;
-		gbc_btnBuscarAlumnos.gridy = 2;
+		gbc_btnBuscarAlumnos.gridy = 3;
 		add(btnBuscarAlumnos, gbc_btnBuscarAlumnos);
 		
 		scrollPane = new JScrollPane();
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 		gbc_scrollPane.gridwidth = 3;
-		gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
+		gbc_scrollPane.insets = new Insets(0, 0, 5, 0);
 		gbc_scrollPane.fill = GridBagConstraints.BOTH;
 		gbc_scrollPane.gridx = 0;
-		gbc_scrollPane.gridy = 3;
+		gbc_scrollPane.gridy = 4;
 		add(scrollPane, gbc_scrollPane);
 		
 		JButton btnGuardarNotas = new JButton("Guardar Valoraciones");
 		btnGuardarNotas.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				botonPulsado();
-				for(PanelFichaAlumno ficha : listaFichas) {
-					if(ControladorValMateria.getInstance().guardar(ficha.guardar()) ) {
-						JOptionPane.showMessageDialog(null, "Guardado Correctamente");
-					} else
-						JOptionPane.showMessageDialog(null, "Error al Guardar");
-				}
+//				for(PanelFichaAlumno ficha : listaFichas) {
+//					if(ControladorValMateria.getInstance().guardar(ficha.guardar()) ) {
+//						JOptionPane.showMessageDialog(null, "Guardado Correctamente");
+//					} else
+//						JOptionPane.showMessageDialog(null, "Error al Guardar");
+//				}
 			}
 		});
 		btnGuardarNotas.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnGuardarNotas = new GridBagConstraints();
 		gbc_btnGuardarNotas.gridx = 2;
-		gbc_btnGuardarNotas.gridy = 4;
+		gbc_btnGuardarNotas.gridy = 5;
 		add(btnGuardarNotas, gbc_btnGuardarNotas);
 		
 		
@@ -131,51 +152,40 @@ public class PanelValoraciones extends JPanel {
 	}
 	
 	private void cargarListas() {
-		for(Materia mat : ControladorMateria.getInstance().findAll()) {
+		for(Materia mat : ControladorMateria.getInstance().findAll()) 
 			this.jcbMateria.addItem(mat);
-		}
+		
 		for(Profesor pro : ControladorProfesor.getInstance().findAll())
 			this.jcbProfesor.addItem(pro);
+		
+		this.crearNotasEnteras();
+		
 	}
 	
-		
-	private void cargarFichasAlumnos() {
-		listaFichas = new ArrayList<PanelFichaAlumno>();
+	
+	private void cargarSelectorNotas() {
+		actualNota = (int) jcbNotas.getSelectedItem();
 		actualMat = (Materia) jcbMateria.getSelectedItem();		//Guardo la materia con la que trabajo
-		actualProf = (Profesor) jcbProfesor.getSelectedItem();	// Guardo el profesor con el que trabajo
-		JPanel jpnlFichas = new JPanel();
-		jpnlFichas.setLayout(new GridBagLayout());
-		GridBagConstraints gbc_preFichas = new GridBagConstraints();
-		gbc_preFichas.insets = new Insets(0, 0, 5, 5);
-		gbc_preFichas.fill = GridBagConstraints.BOTH;
-		gbc_preFichas.gridx = 0;
-		gbc_preFichas.gridy = 0;
-//		add(jpnlFichas,gbc_preFichas);
+		actualProf = (Profesor) jcbProfesor.getSelectedItem();	
 		
-		// Hay que crear el panel aquí y cambiar el GBC la coordenada Y para cada ficha de Estudiante.
-		for(int i =0 ;i < ControladorEstudiante.getInstance().findAll().size(); i++) {
-			Estudiante est = ControladorEstudiante.getInstance().findAll().get(i);	//Seleccionamos un estudiante
-			PanelFichaAlumno fichaEst = new PanelFichaAlumno(est,actualMat, actualProf);
-			GridBagConstraints gbc_panelFichas = new GridBagConstraints();
-			//gbc_panelFichas.insets = new Insets(0, 0, 5, 5);
-			gbc_panelFichas.gridx = 0;
-			gbc_panelFichas.gridy = i;
-			gbc_panelFichas.fill = GridBagConstraints.HORIZONTAL;
-			gbc_panelFichas.weightx=1;
-			
-			jpnlFichas.add(fichaEst,gbc_panelFichas); 	// ADD fichaEstudiantes al JPanel
-			listaFichas.add(fichaEst);	// ADD fichaEstudiantes a la lista
-		}
+		this.actualPanel = new PanelSelectorNotas(actualProf,actualMat,actualNota);
 		
-		
-		this.scrollPane.setViewportView(jpnlFichas);
+		this.scrollPane.setViewportView(actualPanel);
 		scrollPane.revalidate();
 		scrollPane.repaint();	
-		
 	}
+	
 	
 	public static void botonPulsado() {
 		System.out.println("Pulsado");
+	}
+	
+	public void crearNotasEnteras() {
+		int i = 0;
+		List<Integer> listaEnteros = new ArrayList<Integer>();
+		while (i <=10) {
+			 this.jcbNotas.addItem(i++);
+		}
 	}
 	
 }
