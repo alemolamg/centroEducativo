@@ -132,13 +132,11 @@ public class PanelValoraciones2 extends JPanel {
 		btnGuardarNotas.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				botonPulsado();
-//				for(PanelFichaAlumno ficha : listaFichas) {
-//					if(ControladorValMateria.getInstance().guardar(ficha.guardar()) ) {
-//						JOptionPane.showMessageDialog(null, "Guardado Correctamente");
-//					} else
-//						JOptionPane.showMessageDialog(null, "Error al Guardar");
-//				}
-			}
+				if(actualPanel.guardarDatos()) {
+						JOptionPane.showMessageDialog(null, "Guardado Correctamente");
+					} else
+						JOptionPane.showMessageDialog(null, "Error al Guardar");
+				}
 		});
 		btnGuardarNotas.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnGuardarNotas = new GridBagConstraints();
@@ -182,7 +180,6 @@ public class PanelValoraciones2 extends JPanel {
 	
 	public void crearNotasEnteras() {
 		int i = 0;
-		List<Integer> listaEnteros = new ArrayList<Integer>();
 		while (i <=10) {
 			 this.jcbNotas.addItem(i++);
 		}

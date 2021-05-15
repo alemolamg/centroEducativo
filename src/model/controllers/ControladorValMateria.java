@@ -52,20 +52,26 @@ public class ControladorValMateria {
 		return true;
 	}
 	
-	public boolean buscarPorAlumno(Profesor pro,Estudiante est, Materia mat, int nota) {
+	public boolean buscarPorAlumno(Profesor pro, Estudiante est, Materia mat, int nota) {
 			EntityManager em = factory.createEntityManager();
-			Query q = em.createNativeQuery("SELECT * FROM valoracionmateria"
-					+ "WHERE idProfesor = ? AND idEstudiante = ? AND idMateria = ? AND ROUND(valoracion) = ? ;", ValoracionMateria.class);
-			q.setParameter(1, pro.getId());
-			q.setParameter(2, est.getId());
-			q.setParameter(3, mat.getId());
-			q.setParameter(4, nota);
-			
-			if (q.getSingleResult() != null)
-				return true;
-			else
+			boolean encontrado = false;
+			try {
+				Query q = em.createNativeQuery("SELECT * FROM valoracionmateria "
+						+ "WHERE idProfesor = ? AND idEstudiante = ? AND idMateria = ? AND ROUND(valoracion) = ? ;", ValoracionMateria.class);
+				q.setParameter(1, pro.getId());
+				q.setParameter(2, est.getId());
+				q.setParameter(3, mat.getId());
+				q.setParameter(4, nota);
+				
+				if (q.getSingleResult() != null)
+					encontrado = true;
+				return encontrado;
+				
+			} catch (Exception e) {
+				//System.out.println("No existe el valor"); //Muestra por pantalla al pulsar
+				encontrado = false;
 				return false;
-		
+			}
 		
 	}
 	

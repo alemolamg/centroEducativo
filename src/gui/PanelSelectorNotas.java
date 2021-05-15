@@ -23,6 +23,8 @@ import javax.swing.JButton;
 import java.awt.Font;
 import java.awt.Color;
 import javax.swing.JScrollPane;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class PanelSelectorNotas extends JPanel {
 
@@ -30,6 +32,12 @@ public class PanelSelectorNotas extends JPanel {
 	private Materia materia;
 	private List<Estudiante> listaEst;
 	private int nota;
+	private JList jListSelect;
+	private JList jListNoSelect;
+	private DefaultListModel<Estudiante> dlmSelect;
+	private DefaultListModel<Estudiante> dlmNoSelect;
+	private JScrollPane spSeleccionados;
+	private JScrollPane spNoSelect;
 	
 	
 	/**
@@ -75,17 +83,17 @@ public class PanelSelectorNotas extends JPanel {
 		gbl_panelNoSelect.rowWeights = new double[]{1.0, Double.MIN_VALUE};
 		panelNoSelect.setLayout(gbl_panelNoSelect);
 		
-		JScrollPane scrollPane = new JScrollPane();
-		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-		gbc_scrollPane.gridwidth = 2;
-		gbc_scrollPane.insets = new Insets(0, 0, 0, 5);
-		gbc_scrollPane.fill = GridBagConstraints.BOTH;
-		gbc_scrollPane.gridx = 0;
-		gbc_scrollPane.gridy = 0;
-		panelNoSelect.add(scrollPane, gbc_scrollPane);
+		spNoSelect = new JScrollPane();
+		GridBagConstraints gbc_spNoSelect = new GridBagConstraints();
+		gbc_spNoSelect.gridwidth = 2;
+		gbc_spNoSelect.insets = new Insets(0, 0, 0, 5);
+		gbc_spNoSelect.fill = GridBagConstraints.BOTH;
+		gbc_spNoSelect.gridx = 0;
+		gbc_spNoSelect.gridy = 0;
+		panelNoSelect.add(spNoSelect, gbc_spNoSelect);
 		
-		JList listNoSelect = new JList();
-		scrollPane.setViewportView(listNoSelect);
+		jListNoSelect = new JList();
+		spNoSelect.setViewportView(jListNoSelect);
 		
 		JPanel panelBotones = new JPanel();
 		panelBotones.setBackground(Color.PINK);
@@ -103,6 +111,11 @@ public class PanelSelectorNotas extends JPanel {
 		panelBotones.setLayout(gbl_panelBotones);
 		
 		JButton btnTodosIzq = new JButton("<<");
+		btnTodosIzq.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				quitarTodos();
+			}
+		});
 		btnTodosIzq.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		GridBagConstraints gbc_btnTodosIzq = new GridBagConstraints();
 		gbc_btnTodosIzq.insets = new Insets(5, 5, 5, 0);
@@ -111,6 +124,11 @@ public class PanelSelectorNotas extends JPanel {
 		panelBotones.add(btnTodosIzq, gbc_btnTodosIzq);
 		
 		JButton btnIzq = new JButton(" <");
+		btnIzq.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				quitarNotaSeleccionados();
+			}
+		});
 		btnIzq.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		GridBagConstraints gbc_btnIzq = new GridBagConstraints();
 		gbc_btnIzq.insets = new Insets(0, 5, 5, 0);
@@ -119,6 +137,11 @@ public class PanelSelectorNotas extends JPanel {
 		panelBotones.add(btnIzq, gbc_btnIzq);
 		
 		JButton btnDer = new JButton(" >");
+		btnDer.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				aniadirNotaSeleccionados();
+			}
+		});
 		btnDer.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		GridBagConstraints gbc_btnDer = new GridBagConstraints();
 		gbc_btnDer.insets = new Insets(0, 5, 5, 0);
@@ -127,6 +150,11 @@ public class PanelSelectorNotas extends JPanel {
 		panelBotones.add(btnDer, gbc_btnDer);
 		
 		JButton btnTodosDer = new JButton(">>");
+		btnTodosDer.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				aniadirTodos();
+			}
+		});
 		btnTodosDer.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		GridBagConstraints gbc_btnTodosDer = new GridBagConstraints();
 		gbc_btnTodosDer.insets = new Insets(0, 5, 5, 0);
@@ -148,15 +176,16 @@ public class PanelSelectorNotas extends JPanel {
 		gbl_panelSelect.rowWeights = new double[]{1.0, Double.MIN_VALUE};
 		panelSelect.setLayout(gbl_panelSelect);
 		
-		JScrollPane scrollPane_1 = new JScrollPane();
-		GridBagConstraints gbc_scrollPane_1 = new GridBagConstraints();
-		gbc_scrollPane_1.fill = GridBagConstraints.BOTH;
-		gbc_scrollPane_1.gridx = 0;
-		gbc_scrollPane_1.gridy = 0;
-		panelSelect.add(scrollPane_1, gbc_scrollPane_1);
+		spSeleccionados = new JScrollPane();
+		GridBagConstraints gbc_spSeleccionados = new GridBagConstraints();
+		gbc_spSeleccionados.fill = GridBagConstraints.BOTH;
+		gbc_spSeleccionados.gridx = 0;
+		gbc_spSeleccionados.gridy = 0;
+		panelSelect.add(spSeleccionados, gbc_spSeleccionados);
 		
-		JList listSelect = new JList();
-		scrollPane_1.setViewportView(listSelect);
+		jListSelect = new JList();
+		spSeleccionados.setViewportView(jListSelect);
+		
 		
 		
 		this.profesor = pro;
@@ -167,9 +196,13 @@ public class PanelSelectorNotas extends JPanel {
 		colocarAlumnos();
 	}
 	
+	
+	/**
+	 * Carga todos los alumnos en los JScrollPane para poder seleccionarlos. 
+	 */
 	private void colocarAlumnos() {
-		DefaultListModel<Estudiante> dlmSelect = new DefaultListModel<Estudiante>();
-		DefaultListModel<Estudiante> dlmNoSelect = new DefaultListModel<Estudiante>();
+		dlmSelect = new DefaultListModel<Estudiante>();
+		dlmNoSelect = new DefaultListModel<Estudiante>();
 		
 		for(Estudiante est : listaEst)
 			if(ControladorValMateria.getInstance().buscarPorAlumno(profesor, est, materia, nota))
@@ -177,6 +210,92 @@ public class PanelSelectorNotas extends JPanel {
 			else
 				dlmNoSelect.addElement(est);
 		
+		jListSelect = new JList(dlmSelect);
+		jListNoSelect = new JList(dlmNoSelect);
+		spSeleccionados.setViewportView(jListSelect);
+		spNoSelect.setViewportView(jListNoSelect);
 	}
 
+	
+	private void aniadirNotaSeleccionados() {
+		if(!jListNoSelect.isSelectionEmpty()) {
+			
+			for(int i = 0; i < jListNoSelect.getSelectedIndices().length; i++) {
+				dlmSelect.addElement(dlmNoSelect.getElementAt(jListNoSelect.getSelectedIndices()[i]));
+			}
+			
+			for(int i = this.jListNoSelect.getSelectedIndices().length - 1; i >= 0; i--) {
+				dlmNoSelect.removeElementAt(jListNoSelect.getSelectedIndices()[i]);
+			}			
+		} 				
+	}
+	
+	private void quitarNotaSeleccionados() { 	//TODO: no terminado, TERMINAR
+		if(!jListSelect.isSelectionEmpty()) {
+			
+			for(int i = 0; i < jListSelect.getSelectedIndices().length; i++)
+				dlmNoSelect.addElement(dlmSelect.getElementAt(jListSelect.getSelectedIndices()[i]));
+			
+			
+			for(int i = this.jListSelect.getSelectedIndices().length - 1; i >= 0; i--)
+				dlmSelect.removeElementAt(jListSelect.getSelectedIndices()[i]);
+						
+		} 
+		
+	}
+	
+	private void aniadirTodos() {
+		  for (int i = 0; i < this.dlmNoSelect.size(); i++) { 
+			  this.dlmSelect.addElement(this.dlmNoSelect.elementAt(i)); 
+			  }         //Una vez pasados todos a una JList hay que vaciar la otra   
+		  this.dlmNoSelect.clear();
+	}
+	
+	
+	private void quitarTodos() {
+		  for (int i = 0; i < this.dlmSelect.size(); i++) { 
+			  this.dlmNoSelect.addElement(this.dlmSelect.elementAt(i)); 
+			  }         //Una vez pasados todos a una JList hay que vaciar la otra   
+		  this.dlmSelect.clear();
+	}
+	
+	public boolean guardarDatos() {	
+		boolean guardado = true;
+		ValoracionMateria valMateria = null;
+		for(ValoracionMateria valMatActual : ControladorValMateria.getInstance().findAll()) {
+			for(int i = 0; i < dlmSelect.size();i++) {
+				Estudiante est = dlmSelect.elementAt(i);
+				if(valMatActual.getEstudiante().getId() == est.getId() && valMatActual.getMateria().getId() == materia.getId()
+						&& valMatActual.getProfesor().getId() == profesor.getId()) {
+					valMatActual.setValoracion(this.nota);
+					valMateria = valMatActual;
+					break;
+				} else
+					valMateria = new ValoracionMateria(0,est, materia, profesor, this.nota);
+			}
+			if(!ControladorValMateria.getInstance().guardar(valMatActual))
+				guardado = false;
+		}
+		guardarNoPresentados();
+		return guardado;
+	}
+	
+	
+	private void guardarNoPresentados() {
+		ValoracionMateria valMateria = null;
+		for(ValoracionMateria valMatActual : ControladorValMateria.getInstance().findAll()) {
+			for(int i = 0; i < dlmNoSelect.size();i++) {
+				Estudiante est = dlmNoSelect.elementAt(i);
+				if(valMatActual.getEstudiante().getId() == est.getId() && valMatActual.getMateria().getId() == materia.getId()
+						&& valMatActual.getProfesor().getId() == profesor.getId()) {
+					valMatActual.setValoracion(-1);
+					valMateria = valMatActual;
+					break;
+				} 
+			}
+			ControladorValMateria.getInstance().guardar(valMatActual);
+		}
+	}
+		
+	
 }
